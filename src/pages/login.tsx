@@ -1,6 +1,8 @@
 import { useForm, Controller } from 'react-hook-form';
 // import { signIn } from '../../../shared/auth/authService';
 import { useUserLogin } from '../api/user';
+import { Input } from '../components/ui/forms/input';
+import { useEffect } from 'react';
 // import { useUserLogin } from '../../../shared/api/user';
 
 type LoginFormProps = {
@@ -31,32 +33,51 @@ const LoginForm = (
     },
   });
   //   const dispatch = useDispatch();
-  const { mutate, error } = useUserLogin();
+  const { mutate, isSuccess, error } = useUserLogin();
 
+  useEffect(() => {
+    if (isSuccess) {
+      window.location.href = '/character';
+    }
+  }, [isSuccess]);
   const onSubmit = async ({ username, password }: LoginFormValues) => {
     mutate({ username, password });
   };
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col gap-y-5" onSubmit={handleSubmit(onSubmit)}>
       {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
-
-      <Controller
-        name="username"
-        control={control}
-        rules={{ required: 'Username or email is required' }}
-        render={({ field }) => <input {...field} data-testid="username" />}
-      />
-      {errors.username && <span>{errors.username.message}</span>}
-      <Controller
-        name="password"
-        control={control}
-        rules={{ required: 'Password is required' }}
-        render={({ field }) => (
-          <input {...field} type="password" data-testid="password" />
-        )}
-      />
-      {errors.password && <span>{errors.password.message}</span>}
+      <div>
+        <Controller
+          name="username"
+          control={control}
+          rules={{ required: 'Username or email is required' }}
+          render={({ field }) => (
+            <Input
+              {...field}
+              placeholder="Username or email"
+              data-testid="username"
+            />
+          )}
+        />
+        {errors.username && <span>{errors.username.message}</span>}
+      </div>
+      <div>
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: 'Password is required' }}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="password"
+              placeholder="Password"
+              data-testid="password"
+            />
+          )}
+        />
+        {errors.password && <span>{errors.password.message}</span>}
+      </div>
       <button type="submit">Login</button>
     </form>
   );
