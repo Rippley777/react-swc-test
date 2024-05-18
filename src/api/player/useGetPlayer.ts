@@ -1,29 +1,17 @@
 import axios from 'axios';
+import { UseMutationResult, useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { useMutation, UseMutationResult } from 'react-query';
 
-import { clearUser, setUserDataOnLogin } from '../../store/reducers/users';
+import { setUserPlayerData } from '../../store/reducers/users';
 import { API_URL } from '..';
-
-export const register = (username: string, password: string) => {
-  return axios
-    .post(`${API_URL}/auth/register`, {
-      username,
-      password,
-    })
-    .then((response) => {
-      console.log('Registration successful:', response.data);
-    })
-    .catch((error) => {
-      console.error('Registration failed:', error.response.data);
-    });
-};
 
 type LoginResponse = { token: string; id: string; username: string };
 type LoginError = { message: string };
 type UserParams = { username: string; password: string }; // Add password if needed
+axios.defaults.headers.common['Authorization'] =
+  `Bearer ${localStorage.getItem('token')}`;
 
-export const useUserLogin = (): UseMutationResult<
+export const useGetPlayer = (): UseMutationResult<
   LoginResponse,
   LoginError,
   UserParams
@@ -38,7 +26,8 @@ export const useUserLogin = (): UseMutationResult<
 
       try {
         const response = await axios.post<LoginResponse>(
-          `${API_URL}/auth/login`,
+          `${API_URL}/player/get-default-player`,
+
           {
             username,
             password,
@@ -62,10 +51,7 @@ export const useUserLogin = (): UseMutationResult<
     {
       onSuccess: (data) => {
         if (data?.id) {
-          dispatch(setUserDataOnLogin(data));
-        }
-        if (data?.token) {
-          localStorage.setItem('token', data.token); // Store token in localStorage
+          dispatch(setUserPlayerData(data));
         }
       },
       onError: (error: LoginError) => {
@@ -74,13 +60,3 @@ export const useUserLogin = (): UseMutationResult<
     },
   );
 };
-
-export const useUserLogout = () => {
-  const dispatch = useDispatch();
-  return useMutation(async () => {
-    dispatch(clearUser());
-    localStorage.removeItem('token');
-  });
-};
-
-// // axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;

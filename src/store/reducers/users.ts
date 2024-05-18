@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { omit } from '../../utils/obj-helpers';
+import axios from 'axios';
+import { API_URL } from '../../api';
 
 type UserData = {
   email?: string;
@@ -37,11 +39,17 @@ const userSlice = createSlice({
       state.userData = userData;
       state.isAuthenticated = true;
     },
-    setUserId: (state, action: PayloadAction<string>) => {
-      state.userData = {
-        ...state.userData,
-        id: action.payload,
+    setUserPlayerData: (state, action: PayloadAction<Partial<UserData>>) => {
+      if (!state.isAuthenticated || !state.userData) return;
+
+      const userData: UserData = {
+        ...action.payload,
+        id: state.userData.id,
+        email: action.payload.email,
+        username: action.payload.username,
+        lastLogin: new Date(),
       };
+      state.userData = userData;
     },
     setUserProfileData: (state, action: PayloadAction<UserData>) => {
       const payload = omit(action.payload, 'email');
@@ -54,6 +62,10 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserDataOnLogin, setUserId, setUserProfileData, clearUser } =
-  userSlice.actions;
+export const {
+  setUserDataOnLogin,
+  setUserPlayerData,
+  setUserProfileData,
+  clearUser,
+} = userSlice.actions;
 export default userSlice.reducer;

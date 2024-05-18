@@ -37,49 +37,58 @@ const LoginForm = (
 
   useEffect(() => {
     if (isSuccess) {
-      window.location.href = '/character';
+      window.location.href = '/player';
     }
   }, [isSuccess]);
+
   const onSubmit = async ({ username, password }: LoginFormValues) => {
     mutate({ username, password });
   };
 
   return (
-    <form className="flex flex-col gap-y-5" onSubmit={handleSubmit(onSubmit)}>
-      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
-      <div>
-        <Controller
-          name="username"
-          control={control}
-          rules={{ required: 'Username or email is required' }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              placeholder="Username or email"
-              data-testid="username"
-            />
-          )}
-        />
-        {errors.username && <span>{errors.username.message}</span>}
-      </div>
-      <div>
-        <Controller
-          name="password"
-          control={control}
-          rules={{ required: 'Password is required' }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="password"
-              placeholder="Password"
-              data-testid="password"
-            />
-          )}
-        />
-        {errors.password && <span>{errors.password.message}</span>}
-      </div>
-      <button type="submit">Login</button>
-    </form>
+    <div className="flex justify-center flex-1 mt-20">
+      <form
+        className="flex flex-col gap-y-5 items-center"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h1 className="text-primary">Issa game</h1>
+        {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+        <div>
+          <Controller
+            name="username"
+            control={control}
+            rules={{ required: 'Username or email is required' }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder="Username or email"
+                data-testid="username"
+              />
+            )}
+          />
+          {errors.username && <span>{errors.username.message}</span>}
+        </div>
+        <div>
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: 'Password is required' }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="password"
+                placeholder="Password"
+                data-testid="password"
+              />
+            )}
+          />
+          {errors.password && <span>{errors.password.message}</span>}
+        </div>
+        <button type="submit">Login</button>
+        <div>New to the game?</div>
+        <a href="/signup">Sign up</a>
+      </form>
+    </div>
   );
 };
 

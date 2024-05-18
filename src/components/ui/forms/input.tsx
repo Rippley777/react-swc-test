@@ -8,7 +8,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = React.forwardRef((props: Props, ref: any) => {
   return (
     <input
-      className="bg-transparent text-2xl block w-full px-0.5 border-0 border-b-2 border-black focus:ring-0 focus:border-yellow-400 outline-none"
+      className="bg-transparent p-2 text-2xl block w-full px-0.5 border-0 border-b-2 border-black focus:ring-0 focus:border-primary outline-none text-center"
       {...props}
     />
   );
