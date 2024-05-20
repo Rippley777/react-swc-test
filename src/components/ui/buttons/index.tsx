@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 type ButtonProps = {
-  text: string;
+  children: ReactNode;
   onClick: () => void;
 };
 
-const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
-  return <button onClick={onClick}>{text}</button>;
+const Button: React.FC<ButtonProps> = ({ children, onClick }) => {
+  return <button onClick={onClick}>{children}</button>;
 };
 
 export default Button;

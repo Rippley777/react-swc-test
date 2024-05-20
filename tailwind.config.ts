@@ -31,6 +31,15 @@ export default {
   theme: {
     extend: {
       colors,
+      animation: {
+        fadeInSlow: 'fadeIn .5s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+      },
     },
   },
   plugins: [],

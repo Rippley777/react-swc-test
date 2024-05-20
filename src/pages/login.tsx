@@ -46,12 +46,12 @@ const LoginForm = (
   };
 
   return (
-    <div className="flex justify-center flex-1 mt-20">
+    <div className="flex justify-center flex-1">
       <form
         className="flex flex-col gap-y-5 items-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="text-primary">Issa game</h1>
+        <h1 className="text-primary">Sample Game</h1>
         {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
         <div>
           <Controller

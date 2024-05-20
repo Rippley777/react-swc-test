@@ -5,6 +5,7 @@ import Button from '../../components/ui/buttons';
 import { useUserLogout } from '../../api/user';
 import { fetchPlayerData } from '../../store/reducers/player';
 import CharacterSelect from './components/characterSelect';
+import world from '../../assets/world-shadow.webp';
 
 const Player: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,21 +36,33 @@ const Player: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col p-5">
-      <div className="flex justify-between">
-        <h1>{username}</h1>
-        <Button text="Logout" onClick={handleLogout} />
-      </div>
-      <div className="flex">
-        <div className="flex-1">
-          {player.status === 'loading' && <span>loading</span>}
-          {player.status === 'error' && <span>error</span>}
-          {player.status === 'idle' && player.default && (
-            <div>level {player.default?.level}</div>
-          )}
+    <div
+      className="bg-[#01520e]"
+      style={{
+        backgroundImage: `url(${world})`,
+        // backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        height: '100vh',
+        width: '100vw',
+      }}
+    >
+      <div className="flex flex-col p-5">
+        <div className="flex justify-between">
+          <h1>{username}</h1>
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
-        <div>
-          <CharacterSelect />
+        <div className="flex">
+          <div className="flex-1">
+            {player.status === 'loading' && <span>loading</span>}
+            {player.status === 'error' && <span>error</span>}
+            {player.status === 'idle' && player.default && (
+              <div>level {player.default?.level}</div>
+            )}
+          </div>
+          <div>
+            <CharacterSelect />
+          </div>
         </div>
       </div>
     </div>
