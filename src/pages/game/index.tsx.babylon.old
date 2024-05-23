@@ -1,0 +1,143 @@
+import React, { useEffect, useRef } from 'react';
+import * as BABYLON from 'babylonjs';
+import '@babylonjs/loaders';
+import '@babylonjs/loaders/glTF/2.0';
+import '@babylonjs/loaders/glTF';
+import '@babylonjs/materials';
+import cannon from 'cannon';
+import grassTexture from '../../assets/grass.jpg'; // Import the grass texture
+// import shiba from '../../assets/shiba.glb'; // Import the model
+import shiba from '../../assets/chair.glb'; // Import the model
+import { API_URL } from '../../api';
+// Assign Cannon.js to window.CANNON to be used by Babylon.js physics plugin
+(window as any).CANNON = cannon;
+
+const BabylonScene: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const characterRef = useRef<BABYLON.AbstractMesh | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const engine = new BABYLON.Engine(canvas, true);
+
+    const createScene = async (): Promise<BABYLON.Scene> => {
+      const scene = new BABYLON.Scene(engine);
+
+      // Create a camera and attach it to the canvas
+      const camera = new BABYLON.ArcRotateCamera(
+        'camera',
+        Math.PI / 2,
+        Math.PI / 3,
+        10,
+        BABYLON.Vector3.Zero(),
+        scene,
+      );
+      camera.attachControl(canvas, true);
+
+      // Create a light
+      const light = new BABYLON.HemisphericLight(
+        'light',
+        new BABYLON.Vector3(1, 1, 0),
+        scene,
+      );
+
+      // Create ground with grass texture
+      const ground = BABYLON.MeshBuilder.CreateGround(
+        'ground',
+        { width: 50, height: 50 },
+        scene,
+      );
+      const groundMaterial = new BABYLON.StandardMaterial(
+        'groundMaterial',
+        scene,
+      );
+      groundMaterial.diffuseTexture = new BABYLON.Texture(grassTexture, scene);
+      ground.material = groundMaterial;
+
+      // Enable physics with Cannon.js
+      const physicsPlugin = new BABYLON.CannonJSPlugin(true, 10, window.CANNON);
+      scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), physicsPlugin);
+
+      // Make the ground a physics-enabled object
+      ground.physicsImpostor = new BABYLON.PhysicsImpostor(
+        ground,
+        BABYLON.PhysicsImpostor.BoxImpostor,
+        { mass: 0, restitution: 0.9 },
+        scene,
+      );
+
+      // Load character model
+      const result = await BABYLON.SceneLoader.ImportMeshAsync(
+        'character',
+        `${API_URL}/assets/models/`,
+        'chair.glb',
+        scene,
+        function (meshes: any) {
+          console.log(meshes);
+        },
+        '.gltf',
+      );
+      const character = result.meshes[0];
+      characterRef.current = character as BABYLON.AbstractMesh;
+
+      // Set character position and scale
+      character.position = new BABYLON.Vector3(0, 0.5, 0);
+      character.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+
+      // Make the character a physics-enabled object
+      character.physicsImpostor = new BABYLON.PhysicsImpostor(
+        character,
+        BABYLON.PhysicsImpostor.BoxImpostor,
+        { mass: 1, restitution: 0.9 },
+        scene,
+      );
+
+      return scene;
+    };
+
+    createScene().then((scene) => {
+      engine.runRenderLoop(() => {
+        scene.render();
+      });
+
+      window.addEventListener('resize', () => {
+        engine.resize();
+      });
+    });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const character = characterRef.current;
+      if (character) {
+        switch (event.key) {
+          case 'ArrowUp':
+            character.position.z -= 0.1;
+            break;
+          case 'ArrowDown':
+            character.position.z += 0.1;
+            break;
+          case 'ArrowLeft':
+            character.position.x -= 0.1;
+            break;
+          case 'ArrowRight':
+            character.position.x += 0.1;
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      engine.dispose();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100vh' }} />;
+};
+
+export default BabylonScene;

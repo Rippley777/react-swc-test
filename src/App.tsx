@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -13,18 +14,20 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <Routes>
-            <Route path="/game" element={<Game />} />
-            <Route path="/player" element={<Player />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Landing />} />
-          </Routes>
-        </Router>
-      </QueryClientProvider>
-    </Provider>
+    <StrictMode>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <Routes>
+              <Route path="/game" element={<Game />} />
+              <Route path="/player" element={<Player />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Landing />} />
+            </Routes>
+          </Router>
+        </QueryClientProvider>
+      </Provider>
+    </StrictMode>
   );
 }
 

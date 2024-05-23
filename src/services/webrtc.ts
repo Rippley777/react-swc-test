@@ -1,7 +1,9 @@
 import store from '../store/store';
 import { setUserLocations, setConnected } from '../store/reducers/webrtc';
 
-const ws = new WebSocket('ws://99.97.209.132/webrtc');
+const ws = new WebSocket(
+  `ws://99.97.209.132/webrtc?token=${localStorage.getItem('token')}`,
+);
 
 export const setupWebRTC = () => {
   console.log('Setting up WebRTC');

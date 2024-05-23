@@ -45,7 +45,7 @@ const LoginForm = ({ triggerLogin }: LoginFormProps) => {
 
   return (
     <form
-      className="flex flex-col gap-y-5 items-center animate-fadeInSlow"
+      className="flex gap-x-5 items-center animate-fadeInSlow"
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* {error && <p style={{ color: 'red' }}>Error: {error.message}</p>} */}
