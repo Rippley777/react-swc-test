@@ -15,9 +15,14 @@ export type Character = {
   inventory: any; // TODO: Define
 };
 
+type CharacterSession = {
+  location?: { x: number; y: number; z: number };
+};
+
 type CharacterState = {
   selected: Character | null;
   available: Character[];
+  sessionInfo: CharacterSession;
   status: 'idle' | 'loading' | 'failed';
   error?: string;
 };
@@ -25,6 +30,7 @@ type CharacterState = {
 const initialState: CharacterState = {
   selected: null,
   available: [],
+  sessionInfo: {},
   status: 'idle',
   error: undefined,
 };
@@ -57,6 +63,9 @@ const playerSlice = createSlice({
 
       state.selected = action.payload;
     },
+    setCharacterLocation: (state, action: PayloadAction<any>) => {
+      state.sessionInfo.location = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,5 +86,6 @@ const playerSlice = createSlice({
   },
 });
 
-export const { setSelectedCharacter } = playerSlice.actions;
+export const { setSelectedCharacter, setCharacterLocation } =
+  playerSlice.actions;
 export default playerSlice.reducer;

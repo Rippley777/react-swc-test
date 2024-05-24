@@ -7,6 +7,7 @@ import Character from './Character';
 import ThirdPersonCamera from './ThirdPersonCamera';
 import useTextureFromApi from '../hooks/useTextureFromApi';
 import { API_URL } from '../../../api';
+import WorldLocationItems from './worldLocationItems';
 
 type SceneProps = {
   userStartingLocation: { x: number; y: number; z: number } | null;
@@ -50,6 +51,7 @@ const Scene: React.FC<SceneProps> = ({ userStartingLocation }) => {
       <Sky sunPosition={[100, 20, 100]} />
       <Character ref={characterRef} position={characterPosition} />
       {/* <ThirdPersonCamera character={characterRef} /> */}
+      <WorldLocationItems />
       <Plane
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -1, 0]}
